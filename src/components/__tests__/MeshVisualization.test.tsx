@@ -27,7 +27,20 @@ vi.mock('three', () => {
       this.bottom = bottom
       this.near = near
       this.far = far
-      this.position = { z: 10 }
+      this.position = {
+        x: 0,
+        y: 0,
+        z: 10,
+        clone: vi.fn(function (this: any) {
+          return this
+        }),
+        copy: vi.fn(function (this: any, other) {
+          this.x = other.x
+          this.y = other.y
+          this.z = other.z
+          return this
+        }),
+      }
       this.zoom = 1
       this.updateProjectionMatrix = vi.fn()
     }),
@@ -50,6 +63,9 @@ vi.mock('three', () => {
         return this
       })
     }),
+    MOUSE: {
+      PAN: 'pan',
+    },
     Group: vi.fn(function (this: any) {
       this.add = vi.fn()
       this.clear = vi.fn()
@@ -110,7 +126,7 @@ vi.mock('three', () => {
 /**
  * Mock OrbitControls
  */
-vi.mock('three-orbitcontrols-ts', () => ({
+vi.mock('three/addons/controls/OrbitControls.js', () => ({
   OrbitControls: vi.fn(function (this: any) {
     this.enableDamping = false
     this.dampingFactor = 0
